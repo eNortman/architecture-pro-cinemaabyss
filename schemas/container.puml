@@ -1,0 +1,79 @@
+@startuml
+title The Cinema Abyss Container Diagram
+
+top to bottom direction
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include FONTAWESOME/users.puml
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+
+AddElementTag("outdated_system", $bgColor="#a8d9ff")
+UpdateElementStyle("msmovies_db", $borderColor=$f7f7f7, $bgColor="#f7f7f7")
+
+Person(user, "Пользователь", "Пользователь с различными терминальными устройствами (WebBrowser, Mobile App, SmartTV)", $sprite="users")
+
+
+
+Boundary(cinemaabyss, "Cinema Abyss System") {
+
+  ContainerQueue(kbroker, "Message broker", "Kafka", "Контейнер обслуживания очередей сообщений")
+
+
+  Container(msproxy, "Proxy", "Kong?", "Proxy/Load balancer (API/Gateway)")
+
+  Container(msusers, "Users", "Go?", "Управление пользователями")
+  ContainerDb(msusers_db, "БД", "PostgreSQL")
+  Rel_D(msusers, msusers_db,)
+
+  Container(msmovies, "Movies", "Go?", "Обрабатывает всю функциональность, связанную с фильмами")
+  ContainerDb(msmoves_db, "БД", "PostgreSQL")
+  Rel_D(msmovies, msmoves_db,)
+
+  Container(mspayments, "Payments", "Go?", "Сервис, обслуживающий данные о подписках")
+
+  Container(mssubscribes, "Subscribes", "Go?", "Сервис, обслуживающий взаимодействие с платежные системы")
+  ContainerDb(mssubscribes_db, "БД", "PostgreSQL")
+  Rel_D(mssubscribes, mssubscribes_db,)
+
+  Container(msevents, "Events", "Go?", "Сервис обработки уведомлений")
+
+  Container(monolith, "Монолит", "PostgreSQL", "Старый монолит", $tags="outdated_system")
+  ContainerDb(monolithdb, "БД", "PostgreSQL", "БД монолита", $tags="outdated_system")
+  Rel_D(monolith, monolithdb, "R/W")
+}
+
+'Container_Ext(S3,"S3 Storage")
+Container_Ext(online_cinemas,"Онлайн кинотеатры")
+Container_Ext(recomend_sys,"система рекомендаций")
+Container_Ext(payment_systems,"платежные системы")
+
+BiRel(kbroker, recomend_sys,"возможно, через преобразователь api")
+BiRel(kbroker, online_cinemas,"возможно, через преобразователь api")
+
+
+Rel(user, msproxy,"HTTP requests")
+
+Rel(msproxy, msusers ,"HTTP requests")
+Rel(msproxy, msmovies ,"HTTP requests")
+Rel(msproxy, mspayments ,"HTTP requests")
+Rel(msproxy, msevents ,"HTTP requests")
+Rel(msproxy, mssubscribes ,"HTTP requests")
+Rel(msproxy, monolith ,"HTTP requests")
+
+Rel(msusers, kbroker,"создание события о пользователе")
+Rel_U(kbroker, msmovies,"подписка на событие о фильме")
+Rel(mspayments, kbroker,"создание события платежа")
+BiRel(mssubscribes, kbroker,"создание события / подписка на событие, связанные с подпиской")
+
+BiRel(msevents, kbroker,"создание событий и подписка")
+
+Rel(mspayments, payment_systems,"")
+'Rel(msmovies, online_cinemas ,"?")
+'Rel(msmovies, S3 ,"?")
+
+SHOW_LEGEND()
+@enduml
