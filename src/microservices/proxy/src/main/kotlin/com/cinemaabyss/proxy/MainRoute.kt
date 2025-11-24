@@ -57,21 +57,28 @@ class MainRoute : RouteBuilder() {
     override fun configure() {
 
         from("servlet:///*")
+            .routeId("http_endpoint")
             .choice()
             .`when`(header("CamelHttpPath").startsWith("/api/movies"))
                 .to("direct:movies")
+            .`when`(header("CamelHttpPath").startsWith("/api/events"))
+                .to("direct:events")
             .otherwise()
                 .to("direct:default")
 
         from("direct:movies")
-            .routeId("moviesproxy")
+            .routeId("movies_proxy")
             .loadBalance().weighted(true, "${distibutionRatiosMovie.first},${distibutionRatiosMovie.second}")
                 .to("$monolithUrl?bridgeEndpoint=true")
                 .to("$moviesServiceUrl?bridgeEndpoint=true")
             .end()
 
+        from("direct:events")
+            .routeId("events_proxy")
+            .to("$eventsServiceUrl?bridgeEndpoint=true")
+
         from("direct:default")
-            .routeId("allproxy")
+            .routeId("monolith_proxy")
             .to("$monolithUrl?bridgeEndpoint=true")
 
     }
