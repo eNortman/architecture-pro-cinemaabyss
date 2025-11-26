@@ -119,6 +119,9 @@ jobs:
 Успешным результатом данного шага является "зеленая" сборка и "зеленые" тесты
 
 
+[GitHub WorkFlow Screenshot](./img/Screenshot_githubtest.png)
+
+
 ### Proxy в Kubernetes
 
 #### Шаг 1
