@@ -237,8 +237,9 @@ cat .docker/config.json | base64
   kubectl -n cinemaabyss get pod
   ```
 
-  Будет наподобие такого
+Будет наподобие такого
 
+```
   NAME                              READY   STATUS    
 
   events-service-7587c6dfd5-6whzx   1/1     Running  
@@ -254,6 +255,7 @@ cat .docker/config.json | base64
   proxy-service-577d6c549b-6qfcv    1/1     Running  
 
   zookeeper-0                       1/1     Running 
+```
 
   8. Добавим ingress
 
@@ -284,6 +286,13 @@ cat .docker/config.json | base64
 
 #### Шаг 3
 Добавьте сюда скриншота вывода при вызове https://cinemaabyss.example.com/api/movies и  скриншот вывода event-service после вызова тестов.
+
+[скриншота вывода при вызове](./img/ScreenshotMoviesCall.png)
+
+[скриншот вывода event-service после вызова тестов](./img/ScreenshotEventService.png)
+
+[скриншот вывода самих тестов](./img/ScreenshotTestKubeIngres.png)
+
 
 
 ## Задание 4
