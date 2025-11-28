@@ -22,8 +22,9 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    //implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.apache.camel.springboot:camel-spring-boot-starter:$camel_version")
     implementation("org.apache.camel.springboot:camel-servlet-starter:${camel_version}")
     implementation("org.apache.camel.springboot:camel-http-starter:${camel_version}")

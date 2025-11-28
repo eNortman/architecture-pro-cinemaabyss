@@ -1,12 +1,18 @@
 package com.cinemaabyss.proxy
 
+import com.fasterxml.jackson.databind.json.JsonMapper
 import jakarta.annotation.PostConstruct
+import org.apache.camel.Exchange
 import org.apache.camel.builder.RouteBuilder
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
+import org.springframework.boot.actuate.health.HealthEndpoint
+
 @Component
-class MainRoute : RouteBuilder() {
+class MainRoute(
+    private val healthEndpoint: HealthEndpoint
+) : RouteBuilder() {
 
     @Value("\${MONOLITH_URL}") lateinit var monolithUrl: String
     @Value("\${MOVIES_SERVICE_URL}") lateinit var moviesServiceUrl: String
@@ -59,12 +65,32 @@ class MainRoute : RouteBuilder() {
         from("servlet:///*")
             .routeId("http_endpoint")
             .choice()
+            .`when`(header("CamelHttpPath").startsWith("/api/proxy/health"))
+                .to("direct:health")
             .`when`(header("CamelHttpPath").startsWith("/api/movies"))
                 .to("direct:movies")
             .`when`(header("CamelHttpPath").startsWith("/api/events"))
                 .to("direct:events")
             .otherwise()
                 .to("direct:default")
+
+        from("direct:health")
+            .routeId("proxy_health")
+            .process{ exchange ->
+                val health  = healthEndpoint.health()
+                val code = health.status.code
+                val status = code.uppercase() == "UP"
+                val details = health.status.description
+                val jsStat = mapOf(
+                    "status" to status,
+                    "code" to code,
+                    "description" to details
+                )
+
+                exchange.getIn().body = JsonMapper().writeValueAsString(jsStat)
+                exchange.getIn().headers[Exchange.CONTENT_TYPE] = "application/json"
+                exchange.getIn().headers[Exchange.HTTP_RESPONSE_CODE] = "200"
+            }
 
         from("direct:movies")
             .routeId("movies_proxy")
