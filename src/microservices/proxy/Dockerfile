@@ -14,8 +14,7 @@ WORKDIR /home/gradle/src
 
 RUN gradle clean build -x test --no-daemon
 
-#FROM eclipse-temurin:17-jdk-noble AS runtime
-FROM openjdk:17-ea-jdk-alpine AS runtime
+FROM eclipse-temurin:17-jdk-alpine AS runtime
 RUN mkdir /app
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/cinemaproxy.jar
 ENTRYPOINT ["java","-jar","/app/cinemaproxy.jar"]
