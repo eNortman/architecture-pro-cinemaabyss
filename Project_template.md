@@ -5,8 +5,10 @@
 1. Спроектируйте to be архитектуру КиноБездны, разделив всю систему на отдельные домены и организовав интеграционное взаимодействие и единую точку вызова сервисов.
 Результат представьте в виде контейнерной диаграммы в нотации С4.
 Добавьте ссылку на файл в этот шаблон
-[ссылка на файл](ссылка)
 
+> [ссылка на файл](./schemas/container.puml)
+
+> [ссылка на изображение](./schemas/diagram-14695599213558101784.png)
 
 ## Задание 2
 
@@ -59,6 +61,12 @@
 Необходимые тесты для проверки этого API вызываются при запуске npm run test:local из папки tests/postman 
 Приложите скриншот тестов и скриншот состояния топиков Kafka http://localhost:8090 
 
+> [состояние топиков Kafka](./img/ScreenshotKafkaTopics.png)
+
+> [консольный nodejs тест](./img/ScreenshotNodeTest.png)
+
+> [тест в postman](./img/ScreenshotPostman.png) - один тест не проходит из-за врнутр. ошибки postman (не прописан url)
+
 
 ## Задание 3
 
@@ -109,6 +117,9 @@ jobs:
 ```
 Как только сборка отработает и в github registry появятся ваши образы, можно переходить к блоку настройки Kubernetes
 Успешным результатом данного шага является "зеленая" сборка и "зеленые" тесты
+
+
+> [GitHub WorkFlow Screenshot](./img/Screenshot_githubtest.png)
 
 
 ### Proxy в Kubernetes
@@ -226,8 +237,9 @@ cat .docker/config.json | base64
   kubectl -n cinemaabyss get pod
   ```
 
-  Будет наподобие такого
+Будет наподобие такого
 
+```
   NAME                              READY   STATUS    
 
   events-service-7587c6dfd5-6whzx   1/1     Running  
@@ -243,6 +255,7 @@ cat .docker/config.json | base64
   proxy-service-577d6c549b-6qfcv    1/1     Running  
 
   zookeeper-0                       1/1     Running 
+```
 
   8. Добавим ingress
 
@@ -273,6 +286,13 @@ cat .docker/config.json | base64
 
 #### Шаг 3
 Добавьте сюда скриншота вывода при вызове https://cinemaabyss.example.com/api/movies и  скриншот вывода event-service после вызова тестов.
+
+> [скриншота вывода при вызове прокси утилитой curl](./img/ScreenshotMoviesCall.png)
+
+> [скриншот вывода event-service после вызова тестов](./img/ScreenshotEventService.png)
+
+> [скриншот вывода самих тестов](./img/ScreenshotTestKubeIngres.png)
+
 
 
 ## Задание 4
@@ -350,6 +370,12 @@ https://cinemaabyss.example.com/api/movies
 и приложите скриншот развертывания helm и вывода https://cinemaabyss.example.com/api/movies
 
 
+> [скриншота вывода https://cinemaabyss.example.com/api/movies утилитой curl](./img/ScreenshotT4-1.png)
+
+> [скриншот статуса ресурсов kube](./img/ScreenshotT4-2.png)
+
+> [скриншот развертывания helm](./img/ScreenshotT4-3.png)
+
 # Задание 5
 Компания планирует активно развиваться и для повышения надежности, безопасности, реализации сетевых паттернов типа Circuit Breaker и канареечного деплоя вам как архитектору необходимо развернуть istio и настроить circuit breaker для monolith и movies сервисов.
 
@@ -414,6 +440,9 @@ You can see 21 for the upstream_rq_pending_overflow value which means 21 calls s
 ```
 
 Приложите скриншот работы circuit breaker'а
+
+> [скриншот работы circuit breaker'а](./img/ScreenshotT5.png)
+
 
 Удаляем все
 ```bash
