@@ -370,6 +370,12 @@ https://cinemaabyss.example.com/api/movies
 и приложите скриншот развертывания helm и вывода https://cinemaabyss.example.com/api/movies
 
 
+[скриншота вывода вывода https://cinemaabyss.example.com/api/movies](./img/ScreenshotT4-1.png)
+
+[скриншот статуса ресурсов kube](./img/ScreenshotT4-2.png)
+
+[скриншот развертывания helm](./img/ScreenshotT4-3.png)
+
 # Задание 5
 Компания планирует активно развиваться и для повышения надежности, безопасности, реализации сетевых паттернов типа Circuit Breaker и канареечного деплоя вам как архитектору необходимо развернуть istio и настроить circuit breaker для monolith и movies сервисов.
 
